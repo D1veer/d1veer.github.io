@@ -35,14 +35,14 @@ html, body {
   color: #000;
 }
 
-video {
+iframe {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: none;
+  border: none;
 }
 
 #blackScreen {
@@ -87,6 +87,11 @@ video {
 .layer2 { background: #ff88bb; }
 .layer3 { background: #ff77cc; }
 
+.cake {
+  position: relative;
+  margin-top: 20px;
+}
+
 .candle {
   width: 12px;
   height: 40px;
@@ -94,7 +99,7 @@ video {
   border-radius: 4px;
   display: none;
   position: absolute;
-  bottom: 100%; /* sits on top of cake */
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -150,20 +155,19 @@ p {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
-.cake {
-  position: relative;
-  margin-top: 20px;
-}
 </style>
 </head>
 <body>
 
 <button id="startBtn">Click to Start 👁️</button>
 
-<video id="scaryVideo">
-  <source src="annabelle.mp4" type="video/mp4" />
-</video>
+<!-- YouTube iframe -->
+<iframe
+  id="scaryVideo"
+  src="https://www.youtube.com/embed/D1pax0SPBxQ?autoplay=1&controls=0&mute=1&playsinline=1"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen>
+</iframe>
 
 <div id="blackScreen"></div>
 
@@ -184,26 +188,34 @@ p {
       <div class="flame"></div>
     </div>
   </div>
-  <p>Click the plate to build your cake!</p>
+  <p>Click to build your cake!</p>
 </div>
 
 <script>
-// ======= DEBUG MODE =======
-const debug = false; // true to skip video and black screen
-// ===========================
+// ===== DEBUG MODE =====
+const debug = false;
+// =======================
 
 const startBtn = document.getElementById('startBtn');
-const video = document.getElementById('scaryVideo');
+const iframe = document.getElementById('scaryVideo');
 const blackScreen = document.getElementById('blackScreen');
 const cakeContainer = document.getElementById('cakeContainer');
 const reveal = document.getElementById('reveal');
 const music = document.getElementById('music');
 
-const layers = [document.querySelector('.layer1'), document.querySelector('.layer2'), document.querySelector('.layer3')];
+const layers = [
+  document.querySelector('.layer1'),
+  document.querySelector('.layer2'),
+  document.querySelector('.layer3')
+];
+
 const candle = document.querySelector('.candle');
 const flame = document.querySelector('.flame');
 
 let clickCount = 0;
+
+// Simulated video duration  
+const videoDuration = 15000; // milliseconds (change to match video length)
 
 function showReveal() {
   cakeContainer.style.display = 'none';
@@ -211,36 +223,37 @@ function showReveal() {
   music.play();
 }
 
-if(debug){
+if (debug) {
   startBtn.style.display = 'none';
   cakeContainer.style.display = 'flex';
 } else {
   startBtn.addEventListener('click', () => {
     startBtn.style.display = 'none';
-    video.style.display = 'block';
-    video.play();
-  });
+    iframe.style.display = 'block';
 
-  video.onended = () => {
-    video.style.display = 'none';
-    blackScreen.style.display = 'block';
-
+    // simulate video end
     setTimeout(() => {
-      blackScreen.classList.add('fadeOut');
+      iframe.style.display = 'none';
+      blackScreen.style.display = 'block';
+
       setTimeout(() => {
-        blackScreen.style.display = 'none';
-        cakeContainer.style.display = 'flex';
-      }, 2000);
-    }, 3000);
-  };
+        blackScreen.classList.add('fadeOut');
+        setTimeout(() => {
+          blackScreen.style.display = 'none';
+          cakeContainer.style.display = 'flex';
+        }, 2000);
+      }, 3000);
+
+    }, videoDuration);
+  });
 }
 
-// Cake click event
+// Cake clicking logic
 cakeContainer.addEventListener('click', () => {
-  if(clickCount < layers.length){
+  if (clickCount < layers.length) {
     layers[clickCount].style.display = 'block';
     clickCount++;
-  } else if(clickCount === layers.length){
+  } else if (clickCount === layers.length) {
     candle.style.display = 'block';
     flame.style.display = 'block';
     clickCount++;
