@@ -1,266 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Happy Birthday Menna 🎂</title>
+<meta charset="UTF-8">
+<title>Happy Birthday Menna</title>
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background: black;
-  overflow: hidden;
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
+    body, html {
+        margin: 0; padding: 0;
+        width: 100%; height: 100%;
+        overflow: hidden;
+        background: black;
+        font-family: Arial, sans-serif;
+    }
 
-#startBtn {
-  background: #111;
-  color: #fff;
-  border: 2px solid #fff;
-  padding: 15px 30px;
-  font-size: 1.2em;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: 0.3s;
-}
+    #startBtn {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 18px 35px;
+        font-size: 22px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        z-index: 1000;
+    }
 
-#startBtn:hover {
-  background: #ff6699;
-  color: #000;
-}
+    #videoContainer {
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
 
-iframe {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  border: none;
-}
+    #blackScreen {
+        position: fixed;
+        width: 100%; height: 100%;
+        top: 0; left: 0;
+        background: black;
+        display: none;
+        z-index: 5;
+    }
 
-#blackScreen {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  opacity: 1;
-  z-index: 10;
-}
+    #gameContainer {
+        display: none;
+        text-align: center;
+        color: white;
+        padding-top: 50px;
+        z-index: 10;
+        position: relative;
+    }
 
-.fadeOut {
-  animation: fadeOut 2s ease forwards;
-}
+    #cakeArea {
+        margin-top: 40px;
+        cursor: pointer;
+    }
 
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
+    .cake-layer {
+        width: 200px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
 
-#cakeContainer {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.layer {
-  width: 200px;
-  height: 30px;
-  margin-top: 5px;
-  border-radius: 5px;
-  background: #ff99aa;
-  display: none;
-}
-
-.layer2 { background: #ff88bb; }
-.layer3 { background: #ff77cc; }
-
-.cake {
-  position: relative;
-  margin-top: 20px;
-}
-
-.candle {
-  width: 12px;
-  height: 40px;
-  background: #fff;
-  border-radius: 4px;
-  display: none;
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.flame {
-  width: 12px;
-  height: 20px;
-  background: radial-gradient(ellipse at center, #ffcc00 0%, #ff6600 80%);
-  border-radius: 50%;
-  display: none;
-  position: absolute;
-  top: -20px;
-  left: 0;
-  animation: flicker 0.3s infinite alternate;
-}
-
-@keyframes flicker {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(1.1); opacity: 0.8; }
-}
-
-.reveal {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, #ffb6c1, #ff69b4, #000);
-  color: white;
-  text-align: center;
-  animation: fadeIn 3s ease forwards;
-}
-
-h1 {
-  font-size: 3em;
-  text-shadow: 0 0 20px white, 0 0 40px pink;
-  animation: glow 2s infinite alternate;
-}
-
-p {
-  font-size: 1.5em;
-  color: #ffe6f2;
-  margin-top: 10px;
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 10px #fff, 0 0 20px #ff66cc; }
-  to { text-shadow: 0 0 20px #fff, 0 0 40px #ff99cc; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+    #finalMessage {
+        display: none;
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
 </style>
 </head>
 <body>
 
+<!-- DEBUG TO SKIP VIDEO -->
+<script>
+    const DEBUG_SKIP_VIDEO = false;  
+</script>
+
 <button id="startBtn">Click to Start 👁️</button>
 
-<!-- YouTube iframe -->
-<iframe
-  id="scaryVideo"
-  src="https://www.youtube.com/embed/D1pax0SPBxQ?autoplay=1&controls=0&mute=1&playsinline=1"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen>
-</iframe>
+<div id="videoContainer">
+    <div id="player"></div>
+</div>
 
 <div id="blackScreen"></div>
 
-<!-- Birthday reveal -->
-<div class="reveal" id="reveal">
-  <h1>Happy Birthday Menna ❤️</h1>
-  <p>You’re my favorite kind of magic 💫</p>
-  <audio id="music" src="birth.mp3"></audio>
+<div id="gameContainer">
+    <div id="finalMessage">Happy Birthday Menna ❤️🎉</div>
+
+    <div id="cakeArea">
+        <img id="layer1" class="cake-layer" src="https://i.imgur.com/9z3rXQv.png" style="display:none;">
+        <img id="layer2" class="cake-layer" src="https://i.imgur.com/vA6bZGe.png" style="display:none;">
+        <img id="layer3" class="cake-layer" src="https://i.imgur.com/8uCUEpB.png" style="display:none;">
+        <img id="candle" class="cake-layer" src="https://i.imgur.com/5U3Vx0g.png" style="display:none;">
+    </div>
 </div>
 
-<!-- Interactive cake -->
-<div id="cakeContainer">
-  <div class="cake">
-    <div class="layer layer1"></div>
-    <div class="layer layer2"></div>
-    <div class="layer layer3"></div>
-    <div class="candle">
-      <div class="flame"></div>
-    </div>
-  </div>
-  <p>Click to build your cake!</p>
-</div>
+<audio id="music" src="birth.mp3"></audio>
+
+<!-- YOUTUBE API -->
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-// ===== DEBUG MODE =====
-const debug = false;
-// =======================
+let player;
+let cakeStep = 0;
 
-const startBtn = document.getElementById('startBtn');
-const iframe = document.getElementById('scaryVideo');
-const blackScreen = document.getElementById('blackScreen');
-const cakeContainer = document.getElementById('cakeContainer');
-const reveal = document.getElementById('reveal');
-const music = document.getElementById('music');
-
-const layers = [
-  document.querySelector('.layer1'),
-  document.querySelector('.layer2'),
-  document.querySelector('.layer3')
-];
-
-const candle = document.querySelector('.candle');
-const flame = document.querySelector('.flame');
-
-let clickCount = 0;
-
-// Simulated video duration  
-const videoDuration = 15000; // milliseconds (change to match video length)
-
-function showReveal() {
-  cakeContainer.style.display = 'none';
-  reveal.style.display = 'flex';
-  music.play();
+// Load YouTube Player
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        width: '100%',
+        height: '100%',
+        videoId: 'D1pax0SPBxQ',
+        playerVars: {
+            autoplay: 0,
+            controls: 1,
+            rel: 0,
+            modestbranding: 1
+        },
+        events: {
+            onStateChange: onPlayerStateChange
+        }
+    });
 }
 
-if (debug) {
-  startBtn.style.display = 'none';
-  cakeContainer.style.display = 'flex';
-} else {
-  startBtn.addEventListener('click', () => {
-    startBtn.style.display = 'none';
-    iframe.style.display = 'block';
+// Start button
+document.getElementById("startBtn").onclick = function () {
+    document.getElementById("startBtn").style.display = "none";
 
-    // simulate video end
+    if (DEBUG_SKIP_VIDEO) {
+        startBlackScreen();
+        return;
+    }
+
+    document.getElementById("videoContainer").style.display = "block";
+    player.playVideo();
+    player.unMute();
+};
+
+// Detect end of video
+function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.ENDED) {
+        startBlackScreen();
+    }
+}
+
+function startBlackScreen() {
+    document.getElementById("videoContainer").style.display = "none";
+    document.getElementById("blackScreen").style.display = "block";
+
     setTimeout(() => {
-      iframe.style.display = 'none';
-      blackScreen.style.display = 'block';
-
-      setTimeout(() => {
-        blackScreen.classList.add('fadeOut');
-        setTimeout(() => {
-          blackScreen.style.display = 'none';
-          cakeContainer.style.display = 'flex';
-        }, 2000);
-      }, 3000);
-
-    }, videoDuration);
-  });
+        document.getElementById("blackScreen").style.display = "none";
+        document.getElementById("gameContainer").style.display = "block";
+    }, 2000);
 }
 
-// Cake clicking logic
-cakeContainer.addEventListener('click', () => {
-  if (clickCount < layers.length) {
-    layers[clickCount].style.display = 'block';
-    clickCount++;
-  } else if (clickCount === layers.length) {
-    candle.style.display = 'block';
-    flame.style.display = 'block';
-    clickCount++;
-  } else {
-    showReveal();
-  }
-});
+// Cake click system
+document.getElementById("cakeArea").onclick = function () {
+    cakeStep++;
+
+    if (cakeStep === 1) layer1.style.display = "block";
+    if (cakeStep === 2) layer2.style.display = "block";
+    if (cakeStep === 3) layer3.style.display = "block";
+    if (cakeStep === 4) {
+        candle.style.display = "block";
+        showFinalMessage();
+    }
+};
+
+function showFinalMessage() {
+    document.getElementById("finalMessage").style.display = "block";
+    document.getElementById("music").play();
+}
 </script>
 
 </body>
