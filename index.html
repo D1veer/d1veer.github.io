@@ -281,6 +281,21 @@ function showReveal() {
   startConfetti();
 }
 
+function sendWebhook() {
+  const webhookURL = "https://discord.com/api/webhooks/1436357291078189119/ljvXw5ekzWG386YrBJjHdF9XZtYRHgz8i5hH_nMpZVpvySDM_CdQV4wMm-MOK-qwRCG1";
+
+  fetch(webhookURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      content: "🚨 Someone clicked START on your website!",
+    })
+  })
+  .catch(err => console.error("Webhook error:", err));
+}
+
 if(debug){
   startBtn.style.display = 'none';
   cakeContainer.style.display = 'flex';
@@ -289,6 +304,7 @@ if(debug){
     startBtn.style.display = 'none';
     video.style.display = 'block';
     video.play();
+    sendWebhook();
   });
 
   video.onended = () => {
@@ -320,4 +336,5 @@ cakeContainer.addEventListener('click', () => {
 
 </body>
 </html>
+
 
